@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+
+  jwt:
+    signerKey: ${JWT_SIGNER_KEY}
+    valid-duration: ${JWT_VALID_DURATION:3600}
+    refreshable-duration: ${JWT_REFRESHABLE_DURATION:36000}
+
+  minio:
+    endpoint: ${MINIO_ENDPOINT}
+    access-key: ${MINIO_ACCESS_KEY}
+    secret-key: ${MINIO_SECRET_KEY}
+    bucket: ${MINIO_BUCKET}
+
+logging:
+  level:
+    root: INFO
