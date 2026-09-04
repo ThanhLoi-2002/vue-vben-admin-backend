@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/sys002user")
 @RequiredArgsConstructor
 public class Sys002userController {
     private final Sys002userService sys002userService;

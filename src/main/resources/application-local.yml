@@ -12,8 +12,8 @@ spring:
 
   jwt:
     signerKey: mysecretkeymysecretkeymysecretkeymysecretkey
-    valid-duration: 2000 # millisecond 86400000
-    refreshable-duration: 10000 # millisecond 604800000
+    valid-duration: 86400000 # millisecond 86400000
+    refreshable-duration: 604800000 # millisecond 604800000
 
   minio:
     endpoint: http://localhost:9000
