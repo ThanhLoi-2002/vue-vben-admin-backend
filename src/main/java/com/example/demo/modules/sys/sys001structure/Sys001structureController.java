@@ -23,7 +23,7 @@ import java.util.List;
 public class Sys001structureController {
     Sys001structureService structureService;
 
-    @GetMapping("/tree")
+    @GetMapping("/all")
 //    @RequiresPermission(PermissionConstant.STRUCTURE.READ)
     public StructureResponse getTree() {
         return structureService.getMenuTree();
@@ -36,13 +36,13 @@ public class Sys001structureController {
     }
 
     @GetMapping("/menu-by-user")
-    public StructureResponse getMenuByUser(@CurrentUser UserPayload user) {
-        return structureService.getMenuByUser(user.getId(), user.getPermissions(), user.getRoles());
+    public List<StructureResponse> getMenuByUser(@CurrentUser UserPayload user) {
+        return structureService.getMenuByUser(user.getId(), user.getPermissions() != null ? user.getPermissions() : List.of(), user.getRoles());
     }
 
-    @GetMapping("/module-by-app-type")
-    public List<StructureResponse> getModuleByAppType() {
-        return structureService.getModuleByAppType().stream().map(StructureResponse::new).toList();
+    @GetMapping("/module")
+    public List<StructureResponse> getModule() {
+        return structureService.getModule().stream().map(StructureResponse::new).toList();
     }
 
     @GetMapping("/controller-by-module")

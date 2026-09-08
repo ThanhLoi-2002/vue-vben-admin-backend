@@ -4,6 +4,9 @@ import com.example.demo.common.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.ColumnTransformer;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -19,16 +22,18 @@ public class Sys001structure extends BaseEntity {
     Long pid = 0L;
 
     // Đường dẫn router hoặc mã định danh (ví dụ: '/dashboard', 'sys001structure')
-    @Column(name = "code", length = 100)
+    @Column(name = "code")
     String code;
+
+    @Column(name = "name")
+    String name;
+
+    @Column(name = "layout")
+    String layout;
 
     @Column(name = "menu_type")
     @Enumerated(EnumType.STRING)
     MenuType menuType;
-
-    // Chuỗi lưu class icon (ví dụ: 'fas fa-home' hoặc nguyên thẻ '<i class="fas fa-home"></i>')
-    @Column(name = "icon")
-    String icon;
 
     // Tên hiển thị của menu trên giao diện (ví dụ: 'Tổng quan', 'Quản lý người dùng')
     @Column(name = "description")
@@ -42,9 +47,13 @@ public class Sys001structure extends BaseEntity {
     @Column(name = "sort")
     Integer sort = 0;
 
-    String permissions;
+    String authCode;
 
     String component;
 
     String path;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @ColumnTransformer(write = "?")
+    Sys001structureMeta meta;
 }

@@ -50,7 +50,7 @@ public class Sys001structureService {
         }
 
         nodeMap.values().forEach(node ->
-                node.getChildren().sort(Comparator.comparing(StructureResponse::getSort))
+                node.getChildren().sort(Comparator.comparing(data -> data.getMeta().getOrder()))
         );
 
         return root;
@@ -70,28 +70,29 @@ public class Sys001structureService {
         }
     }
 
-    public StructureResponse getMenuByUser(Long userId, List<String> permissions, List<String> roles) {
+    public List<StructureResponse> getMenuByUser(Long userId, List<String> permissions, List<String> roles) {
         List<Sys001structure> menus = structureRepository.findBySttOrderBySortAsc(1);
 
         List<Sys001structure> menusByPermissions = menus.stream()
                 .filter(menu -> {
                     // Nếu menu không yêu cầu quyền cụ thể nào -> Cho phép hiển thị luôn
-                    if (menu.getPermissions() == null || menu.getPermissions().trim().isEmpty()) {
+                    if (menu.getAuthCode() == null || menu.getAuthCode().trim().isEmpty()) {
                         return true;
                     }
 
                     // Cắt chuỗi quyền của menu ra thành mảng (ví dụ: "user:view,user:create")
-                    String[] requiredPerms = menu.getPermissions().split(",");
+                    String[] requiredPerms = menu.getAuthCode().split(",");
 
                     // Kiểm tra xem danh sách quyền của User có chứa ít nhất 1 quyền mà Menu yêu cầu không
                     return Arrays.stream(requiredPerms)
                             .anyMatch(perm -> permissions.contains(perm.trim()));
                 })
                 .toList();
-        return buildTree(menusByPermissions);
+        StructureResponse response = buildTree(menusByPermissions);
+        return response != null ? response.getChildren() : List.of();
     }
 
-    public List<Sys001structure> getModuleByAppType() {
+    public List<Sys001structure> getModule() {
         return structureRepository.findBySttAndTypeOrderBySortAsc(1, 2);
     }
 

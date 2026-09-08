@@ -1,6 +1,7 @@
 package com.example.demo.modules.sys.sys001structure.dto.response;
 
 import com.example.demo.modules.sys.sys001structure.entity.MenuType;
+import com.example.demo.modules.sys.sys001structure.entity.Sys001structureMeta;
 import com.example.demo.modules.sys.sys001structure.entity.Sys001structure;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -18,18 +19,23 @@ public class StructureResponse {
     Long id;
     Long pid;
     String code;
-    String icon;
+    String name;
+    String layout;
     String description;
     Integer type;
-    Integer sort;
-    String permissions;
+    String authCode;
     String component;
     String path;
     MenuType menuType;
     int stt;
+    Sys001structureMeta meta;
     List<StructureResponse> children = new ArrayList<>();
 
     public StructureResponse(Sys001structure e) {
         BeanUtils.copyProperties(e, this);
+
+        if(e.getMeta() != null) {
+            this.meta.setOrder(e.getMeta().getOrder());
+        }
     }
 }
