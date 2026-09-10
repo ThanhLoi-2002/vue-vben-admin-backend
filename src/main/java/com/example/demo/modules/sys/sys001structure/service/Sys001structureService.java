@@ -1,5 +1,6 @@
 package com.example.demo.modules.sys.sys001structure.service;
 
+import com.example.demo.modules.sys.sys001structure.dto.request.StructureRequest;
 import com.example.demo.modules.sys.sys001structure.dto.request.StructureSortRequest;
 import com.example.demo.modules.sys.sys001structure.dto.response.StructureResponse;
 import com.example.demo.modules.sys.sys001structure.entity.Sys001structure;
@@ -8,7 +9,10 @@ import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.beans.BeanUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -50,7 +54,7 @@ public class Sys001structureService {
         }
 
         nodeMap.values().forEach(node ->
-                node.getChildren().sort(Comparator.comparing(data -> data.getMeta().getOrder()))
+                node.getChildren().sort(Comparator.comparing(StructureResponse::getSort))
         );
 
         return root;
@@ -60,8 +64,15 @@ public class Sys001structureService {
         return structureRepository.findByStt(-1);
     }
 
-    public Sys001structure saveOrUpdate(Sys001structure structure) {
-        return structureRepository.save(structure);
+    public Sys001structure saveOrUpdate(StructureRequest structure) {
+        Sys001structure e;
+        if (structure.getId() == null) {
+            e = new Sys001structure();
+        } else {
+            e = structureRepository.findById(structure.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "notFound"));
+        }
+        BeanUtils.copyProperties(structure, e);
+        return structureRepository.save(e);
     }
 
     public void updateMenuOrder(List<StructureSortRequest> updates) {
@@ -75,17 +86,16 @@ public class Sys001structureService {
 
         List<Sys001structure> menusByPermissions = menus.stream()
                 .filter(menu -> {
-                    // Nếu menu không yêu cầu quyền cụ thể nào -> Cho phép hiển thị luôn
-                    if (menu.getAuthCode() == null || menu.getAuthCode().trim().isEmpty()) {
+                    List<String> authCodes = menu.getAuthCode();
+
+                    // Nếu không yêu cầu quyền nào -> Cho phép hiển thị luôn
+                    if (authCodes == null || authCodes.isEmpty()) {
                         return true;
                     }
 
-                    // Cắt chuỗi quyền của menu ra thành mảng (ví dụ: "user:view,user:create")
-                    String[] requiredPerms = menu.getAuthCode().split(",");
-
-                    // Kiểm tra xem danh sách quyền của User có chứa ít nhất 1 quyền mà Menu yêu cầu không
-                    return Arrays.stream(requiredPerms)
-                            .anyMatch(perm -> permissions.contains(perm.trim()));
+                    // Kiểm tra xem danh sách quyền của User có chứa ít nhất 1 quyền trong authCodes không
+                    return authCodes.stream()
+                            .anyMatch(perm -> perm != null && permissions.contains(perm.trim()));
                 })
                 .toList();
         StructureResponse response = buildTree(menusByPermissions);

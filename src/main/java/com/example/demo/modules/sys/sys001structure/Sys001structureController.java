@@ -4,6 +4,7 @@ import com.example.demo.common.annotation.app.ResponseMessage;
 import com.example.demo.common.annotation.currentUser.CurrentUser;
 import com.example.demo.common.annotation.permission.RequiresPermission;
 import com.example.demo.common.util.PermissionConstant;
+import com.example.demo.modules.sys.sys001structure.dto.request.StructureRequest;
 import com.example.demo.modules.sys.sys001structure.dto.request.StructureSortRequest;
 import com.example.demo.modules.sys.sys001structure.dto.response.StructureResponse;
 import com.example.demo.modules.sys.sys001structure.entity.Sys001structure;
@@ -52,7 +53,7 @@ public class Sys001structureController {
 
     @PostMapping
 //    @RequiresPermission(PermissionConstant.STRUCTURE.CREATE_UPDATE)
-    public StructureResponse createOrUpdate(@RequestBody Sys001structure structure) {
+    public StructureResponse createOrUpdate(@RequestBody StructureRequest structure) {
         return new StructureResponse(structureService.saveOrUpdate(structure));
     }
 

@@ -20,22 +20,19 @@ public class StructureResponse {
     Long pid;
     String code;
     String name;
+    String icon;
+    int sort;
     String layout;
     String description;
     Integer type;
-    String authCode;
+    List<String> authCode;
     String component;
     String path;
     MenuType menuType;
     int stt;
-    Sys001structureMeta meta;
     List<StructureResponse> children = new ArrayList<>();
 
     public StructureResponse(Sys001structure e) {
         BeanUtils.copyProperties(e, this);
-
-        if(e.getMeta() != null) {
-            this.meta.setOrder(e.getMeta().getOrder());
-        }
     }
 }

@@ -8,6 +8,8 @@ import org.hibernate.annotations.ColumnTransformer;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.util.List;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Builder
@@ -22,14 +24,13 @@ public class Sys001structure extends BaseEntity {
     Long pid = 0L;
 
     // Đường dẫn router hoặc mã định danh (ví dụ: '/dashboard', 'sys001structure')
-    @Column(name = "code")
     String code;
 
-    @Column(name = "name")
     String name;
 
-    @Column(name = "layout")
     String layout;
+
+    String icon;
 
     @Column(name = "menu_type")
     @Enumerated(EnumType.STRING)
@@ -40,20 +41,20 @@ public class Sys001structure extends BaseEntity {
     String description;
 
     // Loại menu (0: Root, 1: Group, 2: Module, 99: Page/Action)
-    @Column(name = "type")
     Integer type = 99;
 
     // Thứ tự sắp xếp hiển thị giữa các menu đồng cấp
-    @Column(name = "sort")
     Integer sort = 0;
 
-    String authCode;
+    @JdbcTypeCode(SqlTypes.JSON)
+    @ColumnTransformer(write = "?")
+    List<String> authCode;
 
     String component;
 
     String path;
 
-    @JdbcTypeCode(SqlTypes.JSON)
-    @ColumnTransformer(write = "?")
-    Sys001structureMeta meta;
+//    @JdbcTypeCode(SqlTypes.JSON)
+//    @ColumnTransformer(write = "?")
+//    Sys001structureMeta meta;
 }
