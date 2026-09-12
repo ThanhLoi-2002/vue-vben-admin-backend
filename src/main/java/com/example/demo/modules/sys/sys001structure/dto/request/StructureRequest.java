@@ -8,7 +8,6 @@ import java.util.List;
 public class StructureRequest {
     Long id;
     Long pid;
-    String code;
     String name;
     String icon;
     String layout;

@@ -13,8 +13,10 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Sys001structureMeta {
-//    int order;
-//    String title;
+    int order;
+    String title;
+    String icon;
+    String layout;
     Boolean affixTab;
     Boolean keepAlive;
     List<String> authority;

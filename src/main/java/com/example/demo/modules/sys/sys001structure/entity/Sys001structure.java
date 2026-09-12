@@ -23,9 +23,6 @@ public class Sys001structure extends BaseEntity {
     @Column(name = "pid")
     Long pid = 0L;
 
-    // Đường dẫn router hoặc mã định danh (ví dụ: '/dashboard', 'sys001structure')
-    String code;
-
     String name;
 
     String layout;

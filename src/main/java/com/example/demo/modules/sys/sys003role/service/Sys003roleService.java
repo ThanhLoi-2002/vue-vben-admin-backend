@@ -53,7 +53,7 @@ public class Sys003roleService {
         Optional<Sys001structure> structure = structureRepo.findById(role.getId());
 
         RoleResponse res = new RoleResponse(role);
-        structure.ifPresent(value -> res.setModule(value.getCode()));
+        structure.ifPresent(value -> res.setModule(value.getName()));
 
         return res;
     }
@@ -71,7 +71,7 @@ public class Sys003roleService {
         // Query 1 lần
         Map<Long, String> moduleMap = structureRepo.findAllById(moduleIds)
                 .stream()
-                .collect(Collectors.toMap(Sys001structure::getId, Sys001structure::getCode));
+                .collect(Collectors.toMap(Sys001structure::getId, Sys001structure::getName));
 
         // Map response
         return roles.stream()

@@ -53,8 +53,12 @@ public class Sys001structureController {
 
     @PostMapping
 //    @RequiresPermission(PermissionConstant.STRUCTURE.CREATE_UPDATE)
-    public StructureResponse createOrUpdate(@RequestBody StructureRequest structure) {
-        return new StructureResponse(structureService.saveOrUpdate(structure));
+    public StructureResponse createOrUpdate(@RequestBody Sys001structure structure) {
+        if(structure.getId() == null){
+            return new StructureResponse(structureService.save(structure));
+        }else {
+            return new StructureResponse(structureService.update(structure));
+        }
     }
 
     @PutMapping("/sort")

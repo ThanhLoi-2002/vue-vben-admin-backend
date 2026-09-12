@@ -18,7 +18,6 @@ import java.util.List;
 public class StructureResponse {
     Long id;
     Long pid;
-    String code;
     String name;
     String icon;
     int sort;
@@ -30,9 +29,16 @@ public class StructureResponse {
     String path;
     MenuType menuType;
     int stt;
+    Sys001structureMeta meta;
     List<StructureResponse> children = new ArrayList<>();
 
     public StructureResponse(Sys001structure e) {
         BeanUtils.copyProperties(e, this);
+
+        this.meta = new Sys001structureMeta();
+        this.meta.setTitle(e.getName());
+        this.meta.setOrder(e.getSort());
+        this.meta.setIcon(e.getIcon());
+        this.meta.setLayout(e.getLayout());
     }
 }

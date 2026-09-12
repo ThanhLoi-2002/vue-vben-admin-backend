@@ -64,14 +64,15 @@ public class Sys001structureService {
         return structureRepository.findByStt(-1);
     }
 
-    public Sys001structure saveOrUpdate(StructureRequest structure) {
-        Sys001structure e;
-        if (structure.getId() == null) {
-            e = new Sys001structure();
-        } else {
-            e = structureRepository.findById(structure.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "notFound"));
-        }
-        BeanUtils.copyProperties(structure, e);
+    public Sys001structure save(Sys001structure structure) {
+        structure.setSort(0);
+        structure.setAuthCode(structure.getAuthCode() == null ? List.of() : structure.getAuthCode());
+        return structureRepository.save(structure);
+    }
+
+    public Sys001structure update(Sys001structure structure) {
+        Sys001structure e = new Sys001structure();
+        BeanUtils.copyProperties(structure, e, "sort");
         return structureRepository.save(e);
     }
 
