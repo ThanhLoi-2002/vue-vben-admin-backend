@@ -6,44 +6,51 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.util.StringUtils;
 
 @Data
 @NoArgsConstructor
-public abstract class BaseFilter {
+public abstract class BaseFilter<T> {
 
-    private int page = 0;           // bắt đầu từ 0
-    private int limit = 20;         // mặc định 20 items/trang
-    private String sort = "id";     // field mặc định sort
-    private String order = "asc";   // asc / desc
-    private String search;          // tìm kiếm chung (full-text-like trên nhiều field)
+    private int page = 0;           // 0-based index
+    private int pageSize = 20;      // Mặc định 20 items/trang
+    private String sort;     // Field mặc định sort
+    private String order;   // asc / desc
+    private String search;          // Tìm kiếm chung
 
-    // Các field filter cụ thể sẽ được thêm ở class con
-
+    /**
+     * Chuyển đổi sang Pageable an toàn cho Spring Data JPA
+     */
     public Pageable toPageable() {
-        Sort.Direction direction = "desc".equalsIgnoreCase(order)
-                ? Sort.Direction.DESC
-                : Sort.Direction.ASC;
+        // 1. Validate tham số trang tránh IllegalArgumentException
+        int validPage = Math.max(0, this.page);
+        int validPageSize = this.pageSize < 1 ? 20 : Math.min(this.pageSize, 500); // Khống chế tối đa 500 items/trang
 
-        Sort sortObj = Sort.by(direction, sort);
+        // 2. Chỉ tạo Sort khi 'sort' có giá trị (không null, không rỗng)
+        if (StringUtils.hasText(this.sort)) {
+            Sort.Direction direction = "desc".equalsIgnoreCase(this.order)
+                    ? Sort.Direction.DESC
+                    : Sort.Direction.ASC;
 
-        return PageRequest.of(page, limit, sortObj);
-    }
+            return PageRequest.of(validPage, validPageSize, Sort.by(direction, this.sort.trim()));
+        }
 
-    public Pageable toScrollable(String sort, Sort.Direction direction) {
-        Sort sortObj = Sort.by(direction, sort);
-
-        return PageRequest.of(0, limit, sortObj);
-    }
-
-    // Nếu bạn muốn sort nhiều field (sort=email,createdAt&order=asc,desc)
-    // thì có thể override method này ở class con
-    public Pageable toPageableWithMultiSort() {
-        return toPageable(); // mặc định chỉ 1 field
+        // 3. Nếu 'sort' không có giá trị, trả về Pageable không kèm điều kiện sắp xếp (Sort.unsorted())
+        return PageRequest.of(validPage, validPageSize, Sort.unsorted());
     }
 
     /**
-     * Build Specification từ filter này
-     * Class con sẽ override để thêm điều kiện riêng
+     * Phục vụ Infinite Scroll / Fetch trang đầu tiên
      */
-    public abstract <T> Specification<T> toSpecification();
+    public Pageable toScrollable(String defaultSort, Sort.Direction defaultDirection) {
+        int validPageSize = this.pageSize < 1 ? 20 : Math.min(this.pageSize, 500);
+        String sortField = StringUtils.hasText(defaultSort) ? defaultSort.trim() : "id";
+
+        return PageRequest.of(0, validPageSize, Sort.by(defaultDirection, sortField));
+    }
+
+    /**
+     * Build Specification cho Entity T cụ thể
+     */
+    public abstract Specification<T> toSpecification();
 }

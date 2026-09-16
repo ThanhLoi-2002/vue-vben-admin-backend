@@ -39,12 +39,9 @@ public class Sys005langService {
     }
 
     public Page<LangResponse> getAll(LangFilter filter) {
-//        List<Lang> list = langRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
-//        return langMapper.toListResponses(list);
-
         Pageable pageable = filter.toPageable();
 
-        Page<Sys005lang> page = langRepository.findAllLang(filter.getCode(), pageable);
+        Page<Sys005lang> page = langRepository.findAll(filter.toSpecification(), pageable);
 
         return page.map(LangResponse::new);
     }
