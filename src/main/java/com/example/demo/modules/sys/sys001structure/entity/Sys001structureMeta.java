@@ -24,4 +24,5 @@ public class Sys001structureMeta {
     String badge;
     String badgeType;
     String badgeVariants;
+    Boolean hideInMenu = false;
 }

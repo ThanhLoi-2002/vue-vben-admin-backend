@@ -40,5 +40,9 @@ public class StructureResponse {
         this.meta.setOrder(e.getSort());
         this.meta.setIcon(e.getIcon());
         this.meta.setLayout(e.getLayout());
+
+        if(e.getMenuType() == MenuType.BUTTON) {
+            this.meta.setHideInMenu(true);
+        }
     }
 }

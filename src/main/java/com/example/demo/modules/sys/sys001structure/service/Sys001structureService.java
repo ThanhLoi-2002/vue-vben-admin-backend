@@ -71,7 +71,7 @@ public class Sys001structureService {
     }
 
     public Sys001structure update(Sys001structure structure) {
-        Sys001structure e = new Sys001structure();
+        Sys001structure e = structureRepository.findById(structure.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "notFound"));
         BeanUtils.copyProperties(structure, e, "sort");
         return structureRepository.save(e);
     }
