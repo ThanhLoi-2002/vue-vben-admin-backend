@@ -1,6 +1,5 @@
 package com.example.demo.modules.sys.sys001structure.service;
 
-import com.example.demo.modules.sys.sys001structure.dto.request.StructureRequest;
 import com.example.demo.modules.sys.sys001structure.dto.request.StructureSortRequest;
 import com.example.demo.modules.sys.sys001structure.dto.response.StructureResponse;
 import com.example.demo.modules.sys.sys001structure.entity.Sys001structure;
